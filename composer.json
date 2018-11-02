@@ -1,6 +1,7 @@
 {
-  "name": "si/simplesamlphp-module-ucofilter",
+  "name": "informaticauco/simplesamlphp-module-ucofilter",
   "description": "A SimpleSAMLphp module to filter our own attributes",
+  "license": "MIT",
   "type": "simplesamlphp-module",
   "autoload": {
     "psr-0": {
