@@ -2,9 +2,15 @@
   "name": "informaticauco/simplesamlphp-module-ucofilter",
   "description": "A SimpleSAMLphp module to filter our own attributes",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Sergio Gómez",
+      "email": "sergio@uco.es"
+    }
+  ],
   "type": "simplesamlphp-module",
   "autoload": {
-    "psr-0": {
+    "psr-4": {
       "SimpleSAML\\Modules\\UcoFilter\\": "lib"
     }
   },
