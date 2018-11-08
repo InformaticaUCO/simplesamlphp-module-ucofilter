@@ -32,6 +32,11 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
     protected $mapping = [];
 
     /**
+     * @var bool|array
+     */
+    protected $reset = [];
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(array $config, $reserved)
@@ -43,10 +48,13 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
             new HashExpressionLanguageProvider(),
         ]);
 
-        if (!array_key_exists('mapping', $config)) {
-            throw new \Exception('No mapping field specified in configuration');
-        }
+        Assert::keyExists($config, 'mapping', 'No mapping field specified in configuration');
         $this->mapping = $config['mapping'];
+
+        if (array_key_exists('reset', $config)) {
+            Assert::isArray($config['reset'], 'Reset option must be an array');
+            $this->reset = $config['reset'];
+        }
     }
 
     /**
@@ -59,7 +67,16 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
 
         $attributes = &$request['Attributes'];
 
+        $mustBeReseted = $this->checkConditions($this->reset, [
+            'request' => $request,
+            'attributes' => $attributes,
+        ]);
+
         foreach ($this->mapping as $attribute => $rules) {
+            if ($mustBeReseted) {
+                unset($attributes[$attribute]);
+            }
+
             if (!is_array($rules)) {
                 $rules = [$rules];
             }
@@ -113,8 +130,6 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
                 \SimpleSAML\Logger::debug(sprintf('Filter condition ["%s"] syntax error: %s', $condition, $e->getMessage()));
             }
         }
-
-        \SimpleSAML\Logger::debug('[UcoFilter] Invalid condition: '.$condition);
 
         return false;
     }
