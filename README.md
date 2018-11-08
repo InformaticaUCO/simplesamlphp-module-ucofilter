@@ -28,8 +28,8 @@ $config = array(
     
     50 => array(
         'class' => UcoFilter::class,
-        // If one condition is true, all previous attributtes present in mapping
-        // will be removed. Reset is false by default, so no attributes are removed.
+        // If one expression is true, all previous attributtes present in mapping
+        // will be removed. Reset is empty by default, so no attributes are removed.
         'reset' => [
             '"sp-remote-id" in request["saml:RequesterID"]',
         ],
