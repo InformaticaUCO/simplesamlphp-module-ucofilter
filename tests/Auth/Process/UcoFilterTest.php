@@ -56,7 +56,7 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_maps_attributes_when_condition_is_true()
+    public function it_maps_attributes_when_rule_is_true()
     {
         \SimpleSAML_Configuration::loadFromArray(['debug' => true], '', 'simplesaml');
 
@@ -81,7 +81,7 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_maps_attributes_when_condition_is_false()
+    public function it_does_not_maps_attributes_when_rule_is_false()
     {
         \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
 
@@ -125,14 +125,15 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_reset_previous_attributes_when_reset_expressions_are_false()
+    public function it_does_not_reset_previous_attributes_when_rules_expressions_are_false()
     {
         \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'foo' => '"baz"'
         ];
-        $config['reset'][] = '1 == 0';
+        $config['reset'][] = 'foo';
+        $config['rules'][] = '1 == 0';
 
         $request['Attributes']['foo'][] = 'bar';
         $request['Attributes']['tic'][] = 'tac';
@@ -146,14 +147,17 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_resets_previous_attributes_when_reset_expressions_are_true()
+    public function it_resets_previous_attributes_when_rules_expressions_are_true()
     {
         \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
-            'foo' => '"baz"'
+            'foo' => [
+                '"baz"' => 'true',
+            ]
         ];
-        $config['reset'][] = '1 == 1';
+        $config['reset'][] = 'foo';
+        $config['rules'][] = '1 == 1';
 
         $request['Attributes']['foo'][] = 'bar';
         $request['Attributes']['tic'][] = 'tac';
@@ -167,14 +171,15 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_resets_and_removes_attributes_when_reset_expressions_are_true()
+    public function it_resets_and_removes_attributes_when_rule_expressions_are_true()
     {
         \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'foo' => [],
         ];
-        $config['reset'][] = '1 == 1';
+        $config['reset'][] = 'foo';
+        $config['rules'][] = '1 == 1';
 
         $request['Attributes']['foo'][] = 'bar';
         $request['Attributes']['tic'][] = 'tac';

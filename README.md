@@ -28,13 +28,19 @@ $config = array(
     
     50 => array(
         'class' => UcoFilter::class,
-        // If one expression is true, all previous attributtes present in mapping
-        // will be removed. Reset is empty by default, so no attributes are removed.
-        'reset' => [
+        // (Optional) This filter only is executed is almost one rule is true
+        // Default -> 'rules' => ['true']
+        'rules' => [
             '"sp-remote-id" in request["saml:RequesterID"]',
         ],
+        // (Optional) Reset the next attributes before to add new values
+        // Default -> 'reset' => []
+        'reset' => [
+            'eduPersonPrincipalName',
+        ],
+        // (Required) Create new attributes
         'mapping' => array (
-            // Concatenation example without conditions
+            // Concatenation example without rules
             // firstName, middleName and lastName exists in Attributes.
             'commonName' => 'firstName[0]~" "~middleName[0]~" "~lastName[0]',
             
@@ -45,12 +51,12 @@ $config = array(
                 'commonName[0]' // previous attributes are available
             ],
             
-            // Complete syntax with conditions
+            // Complete syntax with rules
             'groups' => [
-                // value expression => condition expression
-                // value only is added if condition is true
+                // value expression => rule expression
+                // value only is added if the rule is true
                 '"staff"' => 'in_attribute(attributes["uid"], ["username1", "username2])',
-                '"guest"' => '"sp-remote-id" in request["saml:RequesterID"]',
+                '"guest"', // always true
                 '"student"' => 'attributes["uid"][0] matches "/^alum\d+/"',
             ],
         ),
@@ -73,11 +79,11 @@ This methods are available inside the expressions:
 
 Value expressions receives all the request attributes as variables. V.g: ```$request['Attributes']['uid']``` will be accessible as ```uid``` variable inside expression. Remember than all attributes are arrays. 
 
-Condition expressions has three variables:
+Rule expressions has three variables:
 
 * `request`: The complete request
 * `attributes`: Only attributes
-* `value`: The value to be assigned if condition is true
+* `value`: The value to be assigned if the rule is true
 
 
 ### Syntax

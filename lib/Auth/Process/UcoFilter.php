@@ -29,12 +29,17 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
     /**
      * @var array
      */
-    protected $mapping = [];
+    protected $rules = ['true'];
 
     /**
-     * @var bool|array
+     * @var array
      */
     protected $reset = [];
+
+    /**
+     * @var array
+     */
+    protected $mapping = [];
 
     /**
      * {@inheritdoc}
@@ -48,13 +53,18 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
             new HashExpressionLanguageProvider(),
         ]);
 
-        Assert::keyExists($config, 'mapping', 'No mapping field specified in configuration');
-        $this->mapping = $config['mapping'];
+        if (array_key_exists('rules', $config)) {
+            Assert::isArray($config['rules'], 'Rules option must be an array');
+            $this->rules = $config['rules'];
+        }
 
         if (array_key_exists('reset', $config)) {
             Assert::isArray($config['reset'], 'Reset option must be an array');
             $this->reset = $config['reset'];
         }
+
+        Assert::keyExists($config, 'mapping', 'No mapping field specified in configuration');
+        $this->mapping = $config['mapping'];
     }
 
     /**
@@ -67,16 +77,19 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
 
         $attributes = &$request['Attributes'];
 
-        $mustBeReseted = $this->checkConditions($this->reset, [
+        // Reset previous attributes
+        $mustBeReseted = $this->checkConditions($this->rules, [
             'request' => $request,
             'attributes' => $attributes,
         ]);
-
-        foreach ($this->mapping as $attribute => $rules) {
-            if ($mustBeReseted) {
+        foreach ($this->reset as $attribute) {
+            if ($mustBeReseted && isset($attributes[$attribute])) {
                 unset($attributes[$attribute]);
             }
+        }
 
+        // Map attributes
+        foreach ($this->mapping as $attribute => $rules) {
             if (!is_array($rules)) {
                 $rules = [$rules];
             }
