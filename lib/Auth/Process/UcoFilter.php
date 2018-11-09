@@ -77,13 +77,17 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
 
         $attributes = &$request['Attributes'];
 
-        // Reset previous attributes
-        $mustBeReseted = $this->checkConditions($this->rules, [
+        $mustBeExecuted = $this->checkConditions($this->rules, [
             'request' => $request,
             'attributes' => $attributes,
         ]);
+        if (!$mustBeExecuted) {
+            return;
+        }
+
+        // Reset previous attributes
         foreach ($this->reset as $attribute) {
-            if ($mustBeReseted && isset($attributes[$attribute])) {
+            if (isset($attributes[$attribute])) {
                 unset($attributes[$attribute]);
             }
         }

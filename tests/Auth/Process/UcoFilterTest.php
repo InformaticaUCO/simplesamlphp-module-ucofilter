@@ -56,7 +56,7 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_maps_attributes_when_rule_is_true()
+    public function it_maps_attributes_when_condition_is_true()
     {
         \SimpleSAML_Configuration::loadFromArray(['debug' => true], '', 'simplesaml');
 
@@ -81,7 +81,7 @@ class UcoFilterTest extends TestCase
     /**
      * @test
      */
-    public function it_does_not_maps_attributes_when_rule_is_false()
+    public function it_does_not_maps_attributes_when_condition_is_false()
     {
         \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
 
@@ -120,28 +120,6 @@ class UcoFilterTest extends TestCase
         $filter->process($request);
 
         $this->assertArraySubset(['foo' => ['bar', 'baz']], $request['Attributes']);
-    }
-
-    /**
-     * @test
-     */
-    public function it_does_not_reset_previous_attributes_when_rules_expressions_are_false()
-    {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
-
-        $config['mapping'] = [
-            'foo' => '"baz"'
-        ];
-        $config['reset'][] = 'foo';
-        $config['rules'][] = '1 == 0';
-
-        $request['Attributes']['foo'][] = 'bar';
-        $request['Attributes']['tic'][] = 'tac';
-
-        $filter = new UcoFilter($config, null);
-        $filter->process($request);
-
-        $this->assertArraySubset(['foo' => ['bar', 'baz'], 'tic' => ['tac']], $request['Attributes']);
     }
 
     /**
@@ -189,6 +167,28 @@ class UcoFilterTest extends TestCase
 
         $this->assertArraySubset(['tic' => ['tac']], $request['Attributes']);
         $this->assertArrayNotHasKey('foo', $request['Attributes']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_exec_filter_when_rules_expressions_are_false()
+    {
+        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+
+        $config['mapping'] = [
+            'foo' => '"baz"'
+        ];
+        $config['reset'][] = 'foo';
+        $config['rules'][] = '1 == 0';
+
+        $request['Attributes']['foo'][] = 'bar';
+        $request['Attributes']['tic'][] = 'tac';
+
+        $filter = new UcoFilter($config, null);
+        $filter->process($request);
+
+        $this->assertArraySubset(['foo' => ['bar'], 'tic' => ['tac']], $request['Attributes']);
     }
 
     /**
