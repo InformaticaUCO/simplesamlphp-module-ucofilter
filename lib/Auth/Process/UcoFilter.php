@@ -108,7 +108,8 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
                     $value = $this->language->evaluate($expression, $attributes);
                     \SimpleSAML\Logger::debug(sprintf('[UcoFilter] expresion ["%s"] value: %s', $expression, $value));
                 } catch (SyntaxError $e) {
-                    throw \SimpleSAML_Error_Error::fromException($e);
+                    \SimpleSAML\Logger::error(sprintf('[UcoFilter] expresion ["%s"] error: %s', $expression, $e->getMessage()));
+                    continue;
                 }
 
                 $mustBeProcessed = $this->checkConditions($conditions, [
