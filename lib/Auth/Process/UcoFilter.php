@@ -20,7 +20,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Webmozart\Assert\Assert;
 
-class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
+class UcoFilter extends \SimpleSAML\Auth\ProcessingFilter
 {
     /**
      * @var ExpressionLanguage

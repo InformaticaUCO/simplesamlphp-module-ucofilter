@@ -23,7 +23,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_maps_attributes()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'eduPersonPrincipalName' => [
@@ -58,7 +58,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_maps_attributes_when_condition_is_true()
     {
-        \SimpleSAML_Configuration::loadFromArray(['debug' => true], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray(['debug' => true], '', 'simplesaml');
 
         $config['mapping'] = [
             'schacPersonalUniqueCode' => [
@@ -83,7 +83,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_does_not_maps_attributes_when_condition_is_false()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'schacPersonalUniqueCode' => [
@@ -108,7 +108,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_does_not_reset_previous_attributes_by_default()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'foo' => '"baz"'
@@ -127,7 +127,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_resets_previous_attributes_when_rules_expressions_are_true()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'foo' => [
@@ -151,7 +151,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_resets_and_removes_attributes_when_rule_expressions_are_true()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'foo' => [],
@@ -174,7 +174,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_does_not_exec_filter_when_rules_expressions_are_false()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['mapping'] = [
             'foo' => '"baz"'
@@ -198,7 +198,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_throw_exception_when_mapping_is_missing()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $request['Attributes']['mail'][] = 'test@mail.com';
 
@@ -211,7 +211,7 @@ class UcoFilterTest extends TestCase
      */
     public function it_handles_missing_attribute_in_rule_and_in_attribute()
     {
-        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+        \SimpleSAML\Configuration::loadFromArray([], '', 'simplesaml');
 
         $config['rules'] = [
             '"guest@guest.uco.es" in attributes["eduPersonAffiliation"] == false',
