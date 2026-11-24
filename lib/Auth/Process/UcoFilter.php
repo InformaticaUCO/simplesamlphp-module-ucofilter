@@ -15,6 +15,7 @@ namespace SimpleSAML\Modules\UcoFilter\Auth\Process;
 
 use SimpleSAML\Modules\UcoFilter\ExpressionLanguage\AttributeExpressionLanguageProvider;
 use SimpleSAML\Modules\UcoFilter\ExpressionLanguage\HashExpressionLanguageProvider;
+use SimpleSAML\Modules\UcoFilter\ExpressionLanguage\SafeAttributes;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Webmozart\Assert\Assert;
@@ -79,7 +80,7 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
 
         $mustBeExecuted = $this->checkConditions($this->rules, [
             'request' => $request,
-            'attributes' => $attributes,
+            'attributes' => new SafeAttributes($attributes),
         ]);
         if (!$mustBeExecuted) {
             return;
@@ -114,7 +115,7 @@ class UcoFilter extends \SimpleSAML_Auth_ProcessingFilter
 
                 $mustBeProcessed = $this->checkConditions($conditions, [
                     'request' => $request,
-                    'attributes' => $attributes,
+                    'attributes' => new SafeAttributes($attributes),
                     'value' => $value,
                 ]);
                 if (!$mustBeProcessed) {

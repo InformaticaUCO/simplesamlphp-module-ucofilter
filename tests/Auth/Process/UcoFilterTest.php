@@ -205,4 +205,29 @@ class UcoFilterTest extends TestCase
         $filter = new UcoFilter([], null);
         $filter->process($request);
     }
+
+    /**
+     * @test
+     */
+    public function it_handles_missing_attribute_in_rule_and_in_attribute()
+    {
+        \SimpleSAML_Configuration::loadFromArray([], '', 'simplesaml');
+
+        $config['rules'] = [
+            '"guest@guest.uco.es" in attributes["eduPersonAffiliation"] == false',
+        ];
+        $config['mapping'] = [
+            'foo' => [
+                '"bar"' => 'in_attribute(attributes["missingAttr"], ["baz"]) == false',
+            ],
+        ];
+
+        $request['Attributes']['mail'][] = 'test@mail.com';
+
+        $filter = new UcoFilter($config, null);
+        $filter->process($request);
+
+        $this->assertArrayHasKey('foo', $request['Attributes']);
+        $this->assertContains('bar', $request['Attributes']['foo']);
+    }
 }

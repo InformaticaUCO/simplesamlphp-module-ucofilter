@@ -26,6 +26,10 @@ class AttributeExpressionLanguageProvider implements ExpressionFunctionProviderI
         return [
             new ExpressionFunction('in_attribute', function ($from, $to) {
                 return sprintf('
+                if (!\is_array(%1$s) || !\is_array(%2$s)) {
+                    return false;
+                }
+
                 foreach (%1$s as $value) {
                     if (\in_array($value, %2$s, true)) {
                         return true;
@@ -35,6 +39,10 @@ class AttributeExpressionLanguageProvider implements ExpressionFunctionProviderI
                 return false;
                 ', $from, $to);
             }, function ($args, $from, $to) {
+                if (!\is_array($from) || !\is_array($to)) {
+                    return false;
+                }
+
                 foreach ($from as $value) {
                     if (\in_array($value, $to, true)) {
                         return true;
